@@ -7,6 +7,10 @@
   "scripts": {
     "start": "node server.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rajatgit123/dockerwebapp.git"
+  }
   "dependencies": {
     "express": "^4.16.1"
   }
