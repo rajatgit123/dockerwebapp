@@ -16,13 +16,13 @@ pipeline {
         }
     
     // Building Docker images
-    stage('Building image') {
-      steps{
-        script {
-          dockerImage = docker.build imageName
-        }
-      }
-    }
+   // stage('Building image') {
+    //  steps{
+     //   script {
+      //    dockerImage = docker.build imageName
+       // }
+      //}
+    //}
 
     // Uploading Docker images into Nexus Registry
    // stage('Uploading to Nexus') {
