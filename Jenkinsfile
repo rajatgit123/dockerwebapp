@@ -34,6 +34,12 @@ pipeline {
         }
       }
     }
+        stage('Slack'){
+            steps{
+                slackSend message: 'Docker image uploaded to Nexus repository'
+                slackSend message: 'Downstream job successfully executed'
+            }
+        }
     }
 }
 
