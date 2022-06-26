@@ -3,7 +3,7 @@ pipeline {
     agent any
     
     environment {
-        imageName = "nodejs-app"
+        imageName = "nodejs-webapp"
         registryCredentials = "nexus"
         registry = "ec2-18-118-122-10.us-east-2.compute.amazonaws.com:8085/"
         dockerImage = ''
@@ -16,24 +16,24 @@ pipeline {
         }
     
     // Building Docker images
-   // stage('Building image') {
-    //  steps{
-     //   script {
-      //    dockerImage = docker.build imageName
-       // }
-      //}
-    //}
+ stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build imageName
+        }
+      }
+    }
 
     // Uploading Docker images into Nexus Registry
-   // stage('Uploading to Nexus') {
-     //steps{  
-       //  script {
-         //    docker.withRegistry( 'http://'+registry, registryCredentials ) {
-           //  dockerImage.push('latest')
-          //}
-        //}
-      //}
-    //}
+    stage('Uploading to Nexus') {
+     steps{  
+         script {
+             docker.withRegistry( 'http://'+registry, registryCredentials ) {
+             dockerImage.push('latest')
+          }
+        }
+      }
+    }
         stage('Slack'){
             steps{
                 slackSend message: 'Docker image uploaded to Nexus repository'
