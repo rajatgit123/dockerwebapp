@@ -25,15 +25,15 @@ pipeline {
     }
 
     // Uploading Docker images into Nexus Registry
-    stage('Uploading to Nexus') {
-     steps{  
-         script {
-             docker.withRegistry( 'http://'+registry, registryCredentials ) {
-             dockerImage.push('latest')
-          }
-        }
-      }
-    }
+   // stage('Uploading to Nexus') {
+     //steps{  
+       //  script {
+         //    docker.withRegistry( 'http://'+registry, registryCredentials ) {
+           //  dockerImage.push('latest')
+          //}
+        //}
+      //}
+    //}
         stage('Slack'){
             steps{
                 slackSend message: 'Docker image uploaded to Nexus repository'
