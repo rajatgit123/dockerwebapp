@@ -5,14 +5,14 @@ pipeline {
     environment {
         imageName = "nodejs-app"
         registryCredentials = "nexus"
-        registry = "ec2-3-14-247-88.us-east-2.compute.amazonaws.com:8085/"
+        registry = "ec2-18-118-122-10.us-east-2.compute.amazonaws.com:8085/"
         dockerImage = ''
     }
     
     stages {
         stage('Code checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'git', url: 'https://github.com/rajatgit123/dockerwebapp.git']]])                   }
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/rajatgit123/dockerwebapp.git']]])                   }
         }
     
     // Building Docker images
