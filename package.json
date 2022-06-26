@@ -6,7 +6,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "sonar-scanner": "node_modules/sonar-scanner/bin/sonar-scaneer.bat"
+    "sonar": "node sonar-project.js"
+    //"sonar-scanner": "node_modules/sonar-scanner/bin/sonar-scaneer.bat"
   },
   "dependencies": {
     "express": "^4.16.1",
