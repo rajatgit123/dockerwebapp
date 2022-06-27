@@ -39,6 +39,7 @@ pipeline {
 			sh '''
 			set +x
 
+			aws ecs list-container-instances --cluster nodejs-app-cluster --region us-east-2
 			aws ecs register-task-definition --cli-input-json file://web-server.json
 			OLD_TASK_ID=`aws ecs list-tasks --cluster nodejs-app-cluster --desired-status RUNNING --family web-server | egrep "task" | tr "/" " " |  awk '{print $3}' | sed 's/"$//'`
 			TASK_REVISION=`aws ecs describe-task-definition --task-definition web-server | egrep "revision" | tr "/" " " | awk '{print $2}' | sed 's/"$//'`
