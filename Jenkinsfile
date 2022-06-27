@@ -5,7 +5,7 @@ pipeline {
     environment {
         imageName = "nodejs-app"
         registryCredentials = "nexus"
-        registry = "ec2-18-118-122-10.us-east-2.compute.amazonaws.com:8085/"
+        registry = "ec2-18-118-254-31.us-east-2.compute.amazonaws.com:8085/"
         dockerImage = ''
     }
     
