@@ -1,0 +1,18 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "web-server",
+            "image": "698788855670.dkr.ecr.us-east-1.amazonaws.com/docker-app-registry:latest",
+            "cpu": 1024,
+            "memory": 1024,
+	    "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 80
+                }
+            ],
+            "essential": true
+        }
+    ],
+    "family": "web-server"
+}
