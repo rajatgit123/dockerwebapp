@@ -3,7 +3,7 @@ pipeline {
     agent any
     
     environment {
-        imageName = "nodejs-app"
+        imageName = "docker-app-registry"
         dockerImage = ''
     }
     
