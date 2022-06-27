@@ -2,7 +2,7 @@
     "containerDefinitions": [
         {
             "name": "web-server",
-            "image": "698788855670.dkr.ecr.us-east-1.amazonaws.com/docker-app-registry:latest",
+            "image": "514141280285.dkr.ecr.us-east-2.amazonaws.com/docker-app-registry:latest",
             "cpu": 1024,
             "memory": 1024,
 	    "portMappings": [
