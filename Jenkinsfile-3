@@ -1,0 +1,64 @@
+pipeline {
+    
+    agent any
+    
+    environment {
+        imageName = "nodejs-app"
+        dockerImage = ''
+    }
+    
+    stages {
+        stage('Code checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/rajatgit123/dockerwebapp.git']]])                   
+           }
+        }
+    
+    // Building Docker images
+ stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build imageName
+        }
+      }
+    }
+
+    stage ('Push Docker Image to ECR') {
+		 steps{
+		    script {
+		  	sh 'aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 514141280285.dkr.ecr.us-east-2.amazonaws.com'
+			sh "docker tag nodejs-app:${buildNumber} 514141280285.dkr.ecr.us-east-2.amazonaws.com/docker-app-registry:latest"
+			sh 'docker push 514141280285.dkr.ecr.us-east-2.amazonaws.com/docker-app-registry:latest'  
+    }
+		}
+		}
+    stage ('Run container on ECS') {
+		 steps{
+       script {
+	
+			sh '''
+			set +x
+
+			aws ecs register-task-definition --cli-input-json file://web-server.json
+			OLD_TASK_ID=`aws ecs list-tasks --cluster nodejs-app-cluster --desired-status RUNNING --family web-server | egrep "task" | tr "/" " " |  awk '{print $3}' | sed 's/"$//'`
+			TASK_REVISION=`aws ecs describe-task-definition --task-definition web-server | egrep "revision" | tr "/" " " | awk '{print $2}' | sed 's/"$//'`
+			aws ecs stop-task --cluster nodejs-app-cluster --task ${OLD_TASK_ID}
+      aws ecs create-service\
+       --cluster nodejs-app-cluster\
+       --service-name ecs-simple-service-elb\
+       --cli-input-json file://ecs-simple-service-elb.json
+			
+		
+			'''
+		}
+    }
+    }
+        stage('Slack'){
+            steps{
+                slackSend message: 'Docker image uploaded to Nexus repository'
+                slackSend message: 'Downstream job successfully executed'
+            }
+        }
+    }
+}
+
