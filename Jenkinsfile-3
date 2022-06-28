@@ -41,11 +41,16 @@ pipeline {
 	
 			sh '''
 			set +x
-
+                        
+			echo '1st'
 			aws ecs register-task-definition --cli-input-json file://web-server.json
+			echo '2nd'
 			OLD_TASK_ID=`aws ecs list-tasks --cluster nodejs-app-cluster --desired-status RUNNING --family web-server | egrep "task" | tr "/" " " |  awk '{print $3}' | sed 's/"$//'`
+			echo '3rd'
 			TASK_REVISION=`aws ecs describe-task-definition --task-definition web-server | egrep "revision" | tr "/" " " | awk '{print $2}' | sed 's/"$//'`
+			echo '4th'
 			aws ecs stop-task --cluster nodejs-app-cluster --task ${OLD_TASK_ID}
+			echo '5th'
 			ClusterUpdate=`aws ecs update-service --cluster nodejs-app-cluster --service nodejs-web-service --task-definition web-server --desired-count 1`
       
 			
