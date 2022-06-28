@@ -37,13 +37,12 @@ pipeline {
 		 steps{
 		  withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'rajatid', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')])
 		  {
-       
-	
-			sh '''
+       sh '''
 			set +x
                         
-			echo '1st'
+		        OLD_TASK_ID = `aws ecs list-tasks --cluster nodejs-app-cluster --desired-status RUNNING --family web-server | egrep "task" | tr "/" " " |  awk '{print $3}' | sed 's/"$//'`
 			aws ecs register-task-definition --cli-input-json file://web-server.json
+			aws ecs stop-task --cluster nodejs-app-cluster --task ${OLD_TASK_ID}
 			ClusterUpdate=`aws ecs update-service --cluster nodejs-cluster --service nodejs-service --task-definition web-server --desired-count 1`
 			aws ecs run-task --cluster nodejs-cluster --task-definition web-server 
       
