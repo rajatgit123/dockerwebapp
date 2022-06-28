@@ -3,7 +3,7 @@ pipeline{
     stages{
         stage("Git CHeckout Stage"){
             steps{
-            git credentialsId: 'githubcredentials', url: 'https://github.com/rajatgit123/dockerwebapp.git'
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/rajatgit123/dockerwebapp.git']]])
         }
         }
         stage("sonarqube analysis"){
@@ -15,7 +15,4 @@ pipeline{
                         sh "npm run sonar"
     }}
 }
-}
-}
-}
-}
+
