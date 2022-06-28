@@ -55,8 +55,7 @@ pipeline {
     }
         stage('Slack'){
             steps{
-                slackSend message: 'Docker image uploaded to Nexus repository'
-                slackSend message: 'Downstream job successfully executed'
+                slackSend message: 'Docker image is running on ecs cluster'
             }
         }
     }
