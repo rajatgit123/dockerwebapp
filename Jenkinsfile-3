@@ -5,6 +5,7 @@ pipeline {
     environment {
         imageName = "docker-app-registry"
         dockerImage = ''
+	AWS_DEFAULT_REGION = "us-east-2"
     }
     
     stages {
@@ -34,6 +35,8 @@ pipeline {
 		}
     stage ('Run container on ECS') {
 		 steps{
+		  withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId:'rajatid', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')])
+		  {
        
 	
 			sh '''
@@ -48,7 +51,7 @@ pipeline {
 			
 		
 			'''
-		
+		}
     }
     }
         stage('Slack'){
