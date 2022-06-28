@@ -55,7 +55,7 @@ pipeline {
     }
         stage('Slack'){
             steps{
-                slackSend message: 'Docker image is running on ecs cluster'
+                slackSend message: 'Docker image is deployed on ecs cluster'
             }
         }
     }
