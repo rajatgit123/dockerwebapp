@@ -1,0 +1,61 @@
+pipeline {
+    
+    agent any
+    
+    environment {
+        imageName = "docker-app-registry"
+        dockerImage = ''
+	AWS_DEFAULT_REGION = "us-east-2"
+    }
+    
+    stages {
+        stage('Code checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/rajatgit123/dockerwebapp.git']]])                   
+           }
+        }
+    
+    // Building Docker images
+ stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build imageName
+        }
+      }
+    }
+
+    stage ('Push Docker Image to ECR') {
+		 steps{
+		    
+		  	sh 'aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 514141280285.dkr.ecr.us-east-2.amazonaws.com'
+			sh 'docker tag docker-app-registry:latest 514141280285.dkr.ecr.us-east-2.amazonaws.com/docker-app-registry:latest'
+			sh 'docker push 514141280285.dkr.ecr.us-east-2.amazonaws.com/docker-app-registry:latest'  
+    
+		}
+		}
+    stage ('Run container on ECS') {
+		 steps{
+		  withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'rajatid', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')])
+		  {
+       sh '''
+			set +x
+                        
+		        
+			aws ecs register-task-definition --cli-input-json file://web-server.json
+			ClusterUpdate=`aws ecs update-service --cluster new-cluster --service new-service --task-definition web-server --desired-count 1`
+			aws ecs run-task --cluster new-cluster --task-definition web-server 
+			 
+      
+			
+		
+			'''
+		}
+    }
+    }
+        stage('Slack'){
+            steps{
+                slackSend message: 'Docker image is deployed on ecs cluster'
+            }
+        }
+    }
+}
