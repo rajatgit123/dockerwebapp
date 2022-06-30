@@ -67,7 +67,7 @@ pipeline {
     }
         stage('Slack'){
             steps{
-	        slackSend message: 'Code passes sonarqube analysis yeah!!!'
+	        slackSend message: 'Code passes sonarqube analysis'
                 slackSend message: 'Docker image is deployed on ecs cluster'
             }
         }
