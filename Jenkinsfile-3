@@ -14,6 +14,18 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/rajatgit123/dockerwebapp.git']]])                   
            }
         }
+	
+	stage("sonarqube analysis"){
+            steps{
+                nodejs(nodeJSInstallationName: 'nodejs'){
+                    withSonarQubeEnv('sonar'){
+                        sh "npm install"
+                        sh "npm install sonar-scanner"
+                        sh "npm run sonar"
+       }
+      }
+     }
+    }
     
     // Building Docker images
  stage('Building image') {
@@ -55,6 +67,7 @@ pipeline {
     }
         stage('Slack'){
             steps{
+	        slackSend message: 'Code passes sonarqube analysis'
                 slackSend message: 'Docker image is deployed on ecs cluster'
             }
         }
